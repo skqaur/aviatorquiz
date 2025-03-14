@@ -1,0 +1,5871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator Quiz - DGCA Prep Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        @font-face {
+            font-family: 'Garamond';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff') format('woff');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
+        body {
+            background-color: #fff;
+            color: #333;
+        }
+        
+        .header {
+            background-color: #000;
+            color: #fff;
+            padding: 30px 20px;
+            text-align: left;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            font-family: 'Garamond', serif;
+            font-weight: bold;
+            font-style: italic;
+            text-align: left;
+            cursor: pointer;
+        }
+        
+        .header h2 {
+            font-size: 38px;
+            margin-bottom: 8px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .header p {
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .page-title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .subject-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .subject-container h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+        
+        .list-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        
+        .list-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 60px;
+            height: 1px;
+            background-color: #e0e0e0;
+        }
+        
+        .list-card:hover {
+            transform: translateX(10px);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-icon svg {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .card-info {
+            flex: 1;
+        }
+        
+        .card-info h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .card-info p {
+            color: #888;
+            font-size: 16px;
+        }
+        
+        .arrow-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .question-container {
+            margin-bottom: 40px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 30px;
+        }
+        
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: white;
+            font-size: 16px;
+        }
+        
+        .option:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .option.selected {
+            border-color: #5271ff;
+        }
+        
+        .option.correct {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        
+        .option.incorrect {
+            background-color: #F44336;
+            color: white;
+            border-color: #F44336;
+        }
+        
+        .finish-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .finish-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .results-container {
+            text-align: center;
+            margin: 40px 0;
+            display: none;
+        }
+        
+        .results-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            border: 1px solid #000;
+            height: 40px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #000;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .progress-fill.good-score {
+            background-color: #4CAF50;
+        }
+        
+        .progress-text {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .results-details {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 20px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .action-button {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .return-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        
+        .retake-button {
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+        }
+        
+        .view-container {
+            display: none;
+        }
+        
+        .view-container.active {
+            display: block;
+        }
+        
+        .home-header {
+            display: none;
+        }
+        
+        .home-header.active {
+            display: block;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header h2 {
+                font-size: 24px;
+            }
+            
+            .header p {
+                font-size: 14px;
+            }
+            
+            .subject-container h2, .title {
+                font-size: 20px;
+            }
+            
+            .card-info h3 {
+                font-size: 18px;
+            }
+            
+            .card-info p {
+                font-size: 14px;
+            }
+            
+            .list-card::after {
+                right: 40px;
+            }
+            
+            .question {
+                font-size: 18px;
+            }
+            
+            .option {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .finish-button {
+                padding: 10px 25px;
+                font-size: 16px;
+            }
+            
+            .results-title {
+                font-size: 24px;
+            }
+            
+            .progress-text {
+                font-size: 16px;
+            }
+            
+            .result-item {
+                font-size: 16px;
+            }
+            
+            .action-button {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 id="logo" onclick="showSubjectsView()">Aviator Quiz</h1>
+        
+        <div id="home-header" class="home-header active">
+            <h2>The ultimate DGCA prep tool</h2>
+            <p>Practice with over 2000 questions</p>
+        </div>
+    </div>
+    
+    <div id="subjects-view" class="view-container active">
+        <div class="subject-container">
+            <h2>Choose Subject</h2>
+            <div id="subjects-container"></div>
+        </div>
+    </div>
+    
+    <div id="materials-view" class="view-container">
+        <div class="content">
+            <div class="page-title">
+                <h2 class="title">Choose Material</h2>
+            </div>
+            <div id="materials-container"></div>
+        </div>
+    </div>
+    
+    <div id="chapters-view" class="view-container">
+        <div class="content">
+            <div class="page-title">
+                <h2 class="title">Choose Chapter</h2>
+            </div>
+            <div id="chapters-container"></div>
+        </div>
+    </div>
+    
+    <div id="quiz-view" class="view-container">
+        <div class="content">
+            <div class="page-title">
+                <h2 id="quiz-title" class="title">Quiz</h2>
+            </div>
+            
+            <div id="quiz-container"></div>
+            
+            <div class="finish-container">
+                <button id="finish-button" class="finish-button" onclick="finishQuiz()">Finish Quiz</button>
+            </div>
+            <br><br><br><br><br><br>
+            
+            <div id="results-container" class="results-container">
+                <h2 class="results-title">Your Results</h2>
+                
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                    <div id="progress-text" class="progress-text">0%</div>
+                </div>
+                
+                <div class="results-details">
+                    <div class="result-item">
+                        <span>Questions Correct</span>
+                        <span id="correct-count">0/15</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Time Spent</span>
+                        <span id="time-spent">0:00</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-button return-button" onclick="backToChapters()">Return to Chapters</button>
+                    <button class="action-button retake-button" onclick="retakeQuiz()">Retake Quiz</button>
+                </div>
+                <br><br><br><br><br><br>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSubject = '';
+        let currentMaterial = '';
+        let currentChapter = '';
+        let quizStartTime = null;
+        let userAnswers = [];
+        let answeredQuestions = [];
+        
+        const materials = {
+    "Meteorology": [
+        {
+            "name": "IC Joshi",
+            "chapters": 21
+        }
+    ]
+};
+        
+        const chapters = {
+    "IC Joshi": [
+        {
+            "name": "Atmosphere",
+            "questions": 45
+        },
+        {
+            "name": "Pressure",
+            "questions": 41
+        },
+        {
+            "name": "Temperature",
+            "questions": 39
+        },
+        {
+            "name": "Density",
+            "questions": 10
+        },
+        {
+            "name": "Humidity",
+            "questions": 10
+        },
+        {
+            "name": "Winds",
+            "questions": 45
+        },
+        {
+            "name": "Visibility and Fog",
+            "questions": 20
+        },
+        {
+            "name": "Clouds",
+            "questions": 20
+        },
+        {
+            "name": "Stability",
+            "questions": 20
+        },
+        {
+            "name": "Optical Phenomena",
+            "questions": 20
+        },
+        {
+            "name": "Precipitation",
+            "questions": 20
+        },
+        {
+            "name": "Ice accretion",
+            "questions": 20
+        },
+        {
+            "name": "Thunderstorms",
+            "questions": 35
+        },
+        {
+            "name": "Air Mass",
+            "questions": 30
+        },
+        {
+            "name": "Jet Stream",
+            "questions": 25
+        },
+        {
+            "name": "Met Briefing",
+            "questions": 10
+        },
+        {
+            "name": "Mountain Waves",
+            "questions": 10
+        },
+        {
+            "name": "Tropical System",
+            "questions": 40
+        },
+        {
+            "name": "Climatology of India",
+            "questions": 32
+        },
+        {
+            "name": "General Circulation",
+            "questions": 15
+        },
+        {
+            "name": "Met Services",
+            "questions": 45
+        }
+
+    ]
+};
+        
+        const quizzes = {
+    "Atmosphere": [
+        {
+            "question": "Lowest Layer of atmosphere is",
+            "options": [
+                "Troposphere",
+                "Tropopause",
+                "Stratosphere"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Height of Tropopause at equator is",
+            "options": [
+                "10-12 km",
+                "16-18km",
+                "12-14 km"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Height of Tropopause at poles is",
+            "options": [
+                "12-14 km",
+                "12-13 km",
+                "08-10 km"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Higher the surface temperature_______ would be the tropopause",
+            "options": [
+                "Higher",
+                "Lower",
+                "Same"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Height of tropopause",
+            "options": [
+                "is constant",
+                "varies with altitude",
+                "varies with latitude"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Above 8 km the lower temperatures are over",
+            "options": [
+                "Equator",
+                "Mid Latitudes",
+                "Poles"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Atmosphere is heated by",
+            "options": [
+                "Solar Radiation",
+                "Heat from earth surface",
+                "From above"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Tropos means ______",
+            "options": [
+                "Turning",
+                "Under current",
+                "Convection"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "CO₂ and H₂O ae also called",
+            "options": [
+                "Green house Gases",
+                "Rare Earth Gases"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Troposphere is generally",
+            "options": [
+                "stable",
+                "Unstable",
+                "Neutral"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Stratosphere is ______",
+            "options": [
+                "Unstable",
+                "Neutral",
+                "Stable"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Tropopause is discontinuous at about",
+            "options": [
+                "30º lat",
+                "40º lat",
+                "80º lat"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Most of atmospheric mass is contained in",
+            "options": [
+                "Troposphere",
+                "Stratosphere",
+                "Heterosphere"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Stratosphere extends from Tropopause to",
+            "options": [
+                "50 km",
+                "60 km",
+                "40 km"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The middle atmosphere layer with temperature inversion and stability",
+            "options": [
+                "Troposphere",
+                "Tropopause",
+                "Stratosphere"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Mother of Pearl clouds occur in",
+            "options": [
+                "Mesosphere",
+                "Thermosphere",
+                "Stratosphere"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The temperature of ISA at 17km is",
+            "options": [
+                "-56.5°C",
+                "-65.5°C",
+                "-35.5°C"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "By weight, approximate ratio of O² and N² in the atmosphere is",
+            "options": [
+                "1:3",
+                "1:4",
+                "1:5"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "By volume, the approximate ratio of O² to N² in the atmosphere is",
+            "options": [
+                "1:3",
+                "1:4",
+                "1:5"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "By volume, the proportion of CO² in the atmosphere is",
+            "options": [
+                "3%",
+                "0.3%",
+                "0.03%"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In ISA, the mean sea level temperature is",
+            "options": [
+                "15°C",
+                "10°C",
+                "25°C"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Maximum concentration of ozone is at a height of",
+            "options": [
+                "10-15 km",
+                "20-25 km",
+                "30-35 km"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Additional oxygen is needed while flying above",
+            "options": [
+                "5000 ft",
+                "7000 ft",
+                "10000 ft"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "CO² and H²O keep the atmosphere",
+            "options": [
+                "Warm",
+                "Cold",
+                "Have no effect"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Noctilucent clouds occur in",
+            "options": [
+                "Thermosphere",
+                "Mesosphere",
+                "Stratosphere"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Temperature at 2 km is 05°C what is ISA deviation. Hint: (Actual – ISA)",
+            "options": [
+                "-05°C",
+                "-02°C",
+                "03°C"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Pressure at MSL is 1002.25 hPa. Find the ISA deviation Hint: (Actual-ISA)",
+            "options": [
+                "-11 hPa",
+                "10 hPa",
+                "12 hPa"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In actual atmosphere temp. at 19 km is -60°C. Find the ISA deviation?",
+            "options": [
+                "-4.5°C",
+                "-05.5°C",
+                "-03.5°C"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Nacreous clouds occur in",
+            "options": [
+                "Thermosphere",
+                "Mesosphere",
+                "Upper Stratosphere"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The atmosphere up to 80 km has a nearly similar composition and is called the Homosphere. Its uniform composition is due to",
+            "options": [
+                "Pressure",
+                "Gravitation of earth",
+                "Mixing due to turbulence"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Half of the atmospheric air mass is contained _____ below",
+            "options": [
+                "20,000 ft",
+                "15,000 ft",
+                "10,000 ft"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In jet standard atmosphere the Lapse Rate is",
+            "options": [
+                "2°C/1000 ft",
+                "2°C/km",
+                "5°C/km"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The rate of fall of temperatures with height, called",
+            "options": [
+                "Isothermal rate",
+                "Inversion rate",
+                "Lapse rate"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In actual atmosphere the lapse rate could",
+            "options": [
+                "Assume any value",
+                "fall up to 8 km.",
+                "rise up to 50 km"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Tropical Tropopause extends from the equator to Lat.35° – 40°. Over India it is at",
+            "options": [
+                "20-21 km",
+                "14-15 km",
+                "16-16.5 km"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Lapse rate in the troposphere is produced by _____ and in the stratosphere by ______",
+            "options": [
+                "Evaporation; condensation",
+                "rising air; solar radiation",
+                "Terrestrial radiation; solar radiation",
+                "solar radiation; convection"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Most of the water vapour in the atmosphere is confined up to",
+            "options": [
+                "Stratosphere",
+                "30,000 ft",
+                "Mid atmosphere",
+                "lower troposphere"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Negative lapse rate of temperature is",
+            "options": [
+                "Isothermal rate",
+                "temperature rise with lowering height",
+                "Temperature rise with height",
+                "temperature fall with height"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In ICAO ISA the atmosphere is assumed to be isothermal",
+            "options": [
+                "in stratopshere",
+                "11 to 16 km",
+                "11 to 20 km",
+                "11 to 32 km"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "One of the characteristics of our atmosphere is",
+            "options": [
+                "Poor conductor of heat and electricity",
+                "Equator is warmer than poles above 10 km",
+                "Lapse rate in the stratosphere is positive",
+                "Density is constant above 8 km"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Heat transfer in the atmosphere is maximum due to",
+            "options": [
+                "convection",
+                "radiation",
+                "sensible heat",
+                "latent heat"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "The knowledge of the height of tropopause is important for a pilot because",
+            "options": [
+                "weather is mainly confined up to this level",
+                "clouds rarely reach up to this height due to jetstreams",
+                "stratosphere starts at this height where all solar radiation are absorbed"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In ISA atmosphere the tropopause occurs at a height of",
+            "options": [
+                "8-10 km",
+                "11 km",
+                "16-18 km"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Most of the transfer of heat in the atmosphere is due to",
+            "options": [
+                "Conduction and freezing",
+                "Convection and evaporation",
+                "Condensation, sublimation and freezing",
+                "Sublimation and radiation"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "There is reversal of temperature in the atmosphere at 8 km because",
+            "options": [
+                "Lapse rate at poles is always higher than at equator",
+                "Lapse rate at equator is always higher than at poles",
+                "Lapse rate at equator is the same as at poles even above the poles",
+                "Lapse rate reverses at poles and becomes negative"
+            ],
+            "correctAnswer": 3
+        }
+    ],
+    "Pressure": [
+        {
+            "question": "Winds in a low pressure",
+            "options": [
+                "Converge",
+                "Diverge",
+                "Go straight"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Low pressure is associated with",
+            "options": [
+                "Good Weather",
+                "Bad Weather",
+                "None"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In a high pressure area winds are",
+            "options": [
+                "Normal",
+                "Strong",
+                "Weak"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Flying from Low to High an altimeter would read",
+            "options": [
+                "Over",
+                "Under",
+                "constant"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Isallobars are lines of equal",
+            "options": [
+                "Pressure",
+                "Temperature Tendency",
+                "Pressure Tendency"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "What kind of a barometer is an altimeter",
+            "options": [
+                "Aneroid",
+                "Mercury",
+                "Alcohol"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "A region between two Lows and Two Highs is",
+            "options": [
+                "Depression",
+                "Secondary low",
+                "Col"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Bad weather and better visibility is associated with",
+            "options": [
+                "High",
+                "Low",
+                "Col"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The relationship between height and pressure is made use in construction of",
+            "options": [
+                "Altimeter",
+                "ASI",
+                "V S I"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Altimeter always measure the height of aircraft above",
+            "options": [
+                "MSL",
+                "datum of 1013.2 hPa",
+                "datum at which its sub-scale is set"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Two aircraft flying at same indicated altitude with altimeters set to 1013.2 h.Pa. One is flying over cold air mass and other over warm air mass. Which of the two has greater altitude?",
+            "options": [
+                "Ac flying over warm air mass",
+                "Ac flying over cold air mass"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The rate of fall of pressure with height in a warm air mass compared to cold air mass will be",
+            "options": [
+                "Same",
+                "More",
+                "Less"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "An increase of 1000 ft at msl is associated with decrease of pressure of",
+            "options": [
+                "100 hPa",
+                "1000 hPa",
+                "3 hPa",
+                "33 hPa"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Lines drawn through places of equal pressure are known as",
+            "options": [
+                "Isobars",
+                "Isotherms",
+                "Isogonal",
+                "Isoclinal"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Which is true?",
+            "options": [
+                "Trough has frontal characteristics",
+                "At trough winds back in N-hemisphere",
+                "At trough winds veer in N-hemisphere"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Semi diurnal pressure changes are most pronounced in",
+            "options": [
+                "Polar region",
+                "Middle latitudes",
+                "Tropics"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Flying from Delhi to Kolkata at constant indicated altitude but, experiencing drift to Starboard. The actual  altitude will be (vis-à-vis) indicated altitude.",
+            "options": [
+                "Lower",
+                "Same",
+                "Higher"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In the Southern Hemisphere, around a Low pressure Area wind blows",
+            "options": [
+                "In clockwise direction",
+                "In anticlockwise direction",
+                "Across isobars towards the centre"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Altimeter of a/c on ground reads aerodrome elevation; its sub-scale is set to",
+            "options": [
+                "QNH",
+                "QNE",
+                "QFF",
+                "QFE"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Instrument for recording pressure is called",
+            "options": [
+                "Anemograph",
+                "Barometer",
+                "Hygrograph"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Poor visibility is associated with",
+            "options": [
+                "High",
+                "Low",
+                "Trough"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "On either side, perpendicular to the ______ pressures rise",
+            "options": [
+                "Trough",
+                "Ridge",
+                "Low"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Fall of pressure with height is more rapid in",
+            "options": [
+                "Cold areas",
+                "Warm areas",
+                "Humid areas"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "300 hPa in ISA corresponds to the level",
+            "options": [
+                "20,000 ft",
+                "30,000 ft",
+                "35,000 ft"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "18,000 ft height in ISA corresponds to the pressure level",
+            "options": [
+                "700 hPa",
+                "200 hPa",
+                "500 hPa"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "200 hPa in ISA corresponds to the level",
+            "options": [
+                "20,000 ft",
+                "30,000 ft",
+                "40,000 ft"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "24,000 ft height in ISA corresponds to pressure level",
+            "options": [
+                "400 hPa",
+                "500 hPa",
+                "300 hPa"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "700 hPa in ISA corresponds to the Fight level",
+            "options": [
+                "20,000 ft",
+                "10,000 ft",
+                "18,000 ft"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "40,000 ft height in ISA approximately corresponds to pressure level",
+            "options": [
+                "400 hPa",
+                "500 hPa",
+                "200 hPa"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "850 hPa in ISA approximately corresponds to the height",
+            "options": [
+                "7,000 ft",
+                "5,000 ft",
+                "10,000 ft"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Atmospheric pressure is due to",
+            "options": [
+                "Wind",
+                "Temperature",
+                "gravity",
+                "density"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "An aircraft is gaining altitude, inspite of altimeter reading constant altitude. Why?",
+            "options": [
+                "Standard pressure has risen",
+                "Flying towards High",
+                "Flying towards Low",
+                "Temperature has decreased"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "An contour of 9160 m can be expected on a constant pressure chart of pressure level",
+            "options": [
+                "500 hPa",
+                "400 hPa",
+                "300 hPa",
+                "200 hPa"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In contour chart of 300 hPa, isohypse (contours) are drawn at interval of",
+            "options": [
+                "20 gpm",
+                "40 gpm",
+                "60 gpm",
+                "80 gpm"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "In constant pressure chart of 500 hPa, isohypse are drawn at interval of",
+            "options": [
+                "20 gpm",
+                "40 gpm",
+                "60 gpm",
+                "80 gpm"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "QNH of an aerodrome 160 m AMSL is 1005 hPa. QFE? Assuming 1hPa = 8m",
+            "options": [
+                "1010 hPa",
+                "985 hPa",
+                "1005 hPa",
+                "990 hPa"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Steep pressure gradient would mean",
+            "options": [
+                "Contours far apart, weak wind",
+                "Contours far apart, strong wind",
+                "Isobars far apart and temperature low",
+                "Isobars closely packed and strong wind"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "What type of inversion occurs when a stable layer lies in a high pressure area",
+            "options": [
+                "Negative",
+                "Radiation",
+                "Subsidence",
+                "Airmass"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Which of the following would cause true altitude to increase when altimeter indicates constant altitude?",
+            "options": [
+                "Warm/Low",
+                "Cold/Low",
+                "Hot/High",
+                "Cool/Low"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The movement of wind in relation to a cyclone is",
+            "options": [
+                "Descending and subsiding",
+                "Ascending and converging",
+                "Descending and cooling",
+                "Ascending and diverging"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "An aerodrome is at the mean sea level. Its QNH is 1014.0 hPa. Its QFF will be",
+            "options": [
+                "1014.0 hPa",
+                "1013.25",
+                "Difficult to tell",
+                "More than QNH"
+            ],
+            "correctAnswer": 0
+        }
+    ],
+    "Temperature": [
+        {
+            "question": "Diurnal variation of temperature is greatest when wind is",
+            "options": [
+                "calm",
+                "light",
+                "strong"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Diurnal variation of temperature is maximum over",
+            "options": [
+                "forest",
+                "ocean",
+                "land"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "On a clear day the amount of solar radiation received by earth surface is",
+            "options": [
+                "3/4",
+                "30%",
+                "5/6"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "ALBEDO is",
+            "options": [
+                "Radiation received by earth",
+                "Amount of heat",
+                "Reflecting power of earth"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "During day the ambient temperature is _____ than ground",
+            "options": [
+                "Lower",
+                "Higher",
+                "Same"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Diurnal variation of temperature over ocean is _____",
+            "options": [
+                "More than land",
+                "Above 3°C",
+                "Less than 1°C"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "At a coastal station the diurnal variation of temperature depends on",
+            "options": [
+                "Wind direction",
+                "Wind speed",
+                "Radiation"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Snow surface reflects about ______ % of solar radiation.",
+            "options": [
+                "75%",
+                "80%",
+                "90%"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Amount of Solar radiation received per unit area is",
+            "options": [
+                "Insolation",
+                "Convection",
+                "Radiation"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Solar radiation received by the earth is",
+            "options": [
+                "Long Wave",
+                "Albedo",
+                "Shortwave"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Rise in temperature of a surface is proportional to its specific heat",
+            "options": [
+                "Directly",
+                "Inversely"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Specific heat of land is _____ than that of water",
+            "options": [
+                "Lower",
+                "Same",
+                "Higher"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Minimum temperature is reached at",
+            "options": [
+                "sunrise",
+                "midnight",
+                "1/2 - 1 hour after dawn"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "An air parcel is lifted till it gets saturated. The temperature attained by its called",
+            "options": [
+                "Potential temperature",
+                "Dew point",
+                "Wet bulb"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Cloudy nights are",
+            "options": [
+                "cold",
+                "normal",
+                "warm"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Water vapour is transparent to terrestrial radiation",
+            "options": [
+                "completely",
+                "partially",
+                "indifferent"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Higher the temperature ______ would be the wavelength of emitted radiation",
+            "options": [
+                "longer",
+                "shorter"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Air is a bad conductor of heat. A parcel of air can therefore be regarded as insulated from the environment",
+            "options": [
+                "False",
+                "True"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Warmer the earth _____ will be the Nocturnal radiation",
+            "options": [
+                "intense",
+                "weaker",
+                "moderate"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Heat is the _____ of the KE of all the molecules and atoms of a substance",
+            "options": [
+                "sum total",
+                "average"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The solar radiation consists of about 46%",
+            "options": [
+                "UV",
+                "IR",
+                "Visible"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The total energy radiated by a black body is proportional to its temperature(T)",
+            "options": [
+                "T²",
+                "T³",
+                "T4"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Intense radiation are emitted by",
+            "options": [
+                "Hot bodies",
+                "Cold bodies",
+                "Stars"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The wavelength of most intense radiation is inversely proportional to its",
+            "options": [
+                "Absolute temperature",
+                "Humidity",
+                "Albedo"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Hot bodies (like sun) radiate",
+            "options": [
+                "Short Waves",
+                "Long Waves",
+                "Both"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The flow of heat from earth surface is 77% by",
+            "options": [
+                "Sensible Heat",
+                "Latent Heat"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "-40°C = -40°F",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The door of Stevenson’s screen should open",
+            "options": [
+                "opposite to sun",
+                "into sun",
+                "any direction"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The liquid used in Minimum Thermometer is",
+            "options": [
+                "mercury",
+                "alcohol",
+                "sprit"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Freezing point of water is",
+            "options": [
+                "0°F",
+                "12°F",
+                "22°F",
+                "32°F"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Boiling point of water is",
+            "options": [
+                "100°F",
+                "112°F",
+                "212°F",
+                "312°F"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Freezing point of water is",
+            "options": [
+                "173 K",
+                "273 K",
+                "373 K",
+                "472 K"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Boiling point of water is",
+            "options": [
+                "373 K",
+                "273°K",
+                "173 K",
+                "312°K"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Convert 68°F into Kelvin temperature",
+            "options": [
+                "233 K",
+                "283 K",
+                "294 K",
+                "293 K"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Diurnal variation of temperature is least on a day when it is",
+            "options": [
+                "Clear",
+                "Partly cloudy",
+                "Cloudy",
+                "Overcast"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "A clear and calm night is cooler than a cloudy night, because nocturnal radiation",
+            "options": [
+                "escape through cold",
+                "are partly radiated back by clouds to earth",
+                "are fully absorbed by H²O",
+                "are fully prevented by clouds to escape"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Which surface will cause higher diurnal variation",
+            "options": [
+                "Forest",
+                "Desert",
+                "Water",
+                "Snow"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "If temperature does not change in a layer with height on a day indicates",
+            "options": [
+                "Isothermal layer",
+                "Inversion",
+                "Instabilty",
+                "Uniform Lapse Rate"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Surface Temperature is recorded at a height of _____ above ground",
+            "options": [
+                "1.5 m",
+                "1.25 m",
+                "2 m"
+            ],
+            "correctAnswer": 1
+        }
+    ],
+    "Density": [
+        {
+            "question": "Density is _____ at poles than equator",
+            "options": [
+                "Higher",
+                "Lower",
+                "Same"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Above 8 km density is ______ at poles than at equator",
+            "options": [
+                "Higher",
+                "Lower",
+                "same"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The altitude in ISA at which air density is the same as the observed density is",
+            "options": [
+                "Density Altitude",
+                "ISA Density",
+                "Real Density"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Density is usually expressed as",
+            "options": [
+                "Kg/sq n",
+                "g/cu m",
+                "N/sq m"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Higher density altitude means ______ density",
+            "options": [
+                "Higher",
+                "Lower",
+                "Same"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "For given pressure and temperature moist air has density",
+            "options": [
+                "Higher",
+                "Lower",
+                "Same"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Air is less denser in",
+            "options": [
+                "High Altitudes",
+                "Warm Air",
+                "High humidity",
+                "All these"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Density altitude may be defined as:",
+            "options": [
+                "The altitude in ISA at which the prevailing pressure occurs.",
+                "The altitude in ISA at which the prevailing density occurs.",
+                "The altitude in actual atmosphere at which the prevailing density occurs."
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Temperature being constant, if pressure increases the density altitude.",
+            "options": [
+                "increases",
+                "lowers",
+                "remains the same"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "For every 1°C change in temperature, density altitude differs from pressure altitude by",
+            "options": [
+                "33 ft",
+                "100 ft",
+                "120 ft",
+                "210 ft"
+            ],
+            "correctAnswer": 2
+        }
+    ],
+    "Humidity": [
+        {
+            "question": "The ratio in % between the amount of water vapour present in air to the amount of water vapour that it can hold at the same temperature is",
+            "options": [
+                "Humidity",
+                "Relative humidity",
+                "Dew point"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The temperature to which air be cooled at constant pressure to become saturated, is called",
+            "options": [
+                "Wet bulb temperature",
+                "Dry bulb temperature",
+                "Dew point",
+                "Humidity"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Free air temperature, Wet bulb temperature and Dew point temperature are equal when",
+            "options": [
+                "Air temperature is 0°C",
+                "Relative humidity is 100%",
+                "Air temperature is not below 0°C"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "On a rainy day compared to sunny day the length of runway required is",
+            "options": [
+                "More",
+                "Less",
+                "Same"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The spread (difference) between Free air temperature and Dew point temperature is _____ when the air is saturated",
+            "options": [
+                "Large",
+                "Least",
+                "Same"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The saturation vapour pressure over water is _____ than the ice",
+            "options": [
+                "More",
+                "Less",
+                "Same"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "As the temperature of the air increases, the amount of water vapour required to saturate it",
+            "options": [
+                "decreases",
+                "increases",
+                "remains same"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The actual amount of water vapour contained in a given volume of air at a given temperature is termed as",
+            "options": [
+                "Relative Humidity",
+                "Specific Humidity",
+                "Absolute Humidity"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Humidity mixing Ratio _____ when air is lifted adiabatically",
+            "options": [
+                "decreases",
+                "remains constant",
+                "increases"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "It is the lowest temperature which air would attain by evaporating water into it to saturate it.",
+            "options": [
+                "Wet bulb temp",
+                "Dry bulb temp",
+                "Dew point"
+            ],
+            "correctAnswer": 0
+        }
+    ],
+    "Winds": [
+        {
+            "question": "In S hemisphere if an observer faces wind, low will be to his ____",
+            "options": [
+                "Right",
+                "Left"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In N hemisphere due to rotation of earth winds are deflected to",
+            "options": [
+                "Left",
+                "Right"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Local Winds follow Buys Ballots law",
+            "options": [
+                "False",
+                "True"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Coriolis force acts perpendicular to the _____ of wind direction in N hemisphere.",
+            "options": [
+                "Left",
+                "Right"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Geostrophic wind is due to the balance between the forces",
+            "options": [
+                "Coriolis and Frictional",
+                "Pressure gradient and Cyclostrophic",
+                "Pressure gradient and Coriolis"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Coriolis force is strongest at",
+            "options": [
+                "Mid latitudes",
+                "Poles",
+                "Equator"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Geostrophic rule breaks down at",
+            "options": [
+                "Mid latitudes",
+                "Poles",
+                "Equator"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Fohn winds are ____ on the Leeward side of a mountain.",
+            "options": [
+                "Dry & Warm",
+                "Cold & Humid"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The wind sliding down a hill during night is called ______ wind.",
+            "options": [
+                "Fohen",
+                "Anabetic",
+                "Katabatic"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "With the onset of sea breeze there is a _____ in temperature and ____ in RH.",
+            "options": [
+                "Fall/Rise",
+                "Rise/Fall",
+                "Fall/Fall"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Sea breeze sets in by ______ and dies off at _____",
+            "options": [
+                "Night/Day",
+                "Day/Night",
+                "Both Day and Night"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "If an aircraft in N-hemisphere flies from H to L it will experience",
+            "options": [
+                "Starboard drift",
+                "Port drift"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In N-Hemisphere if you experience Port drift, altimeter will read",
+            "options": [
+                "Under",
+                "Over"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Lines of constant wind speed drawn on weather charts are called",
+            "options": [
+                "Isobars",
+                "Isotachs",
+                "Isogons"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Squall are distinguished from gusts by:",
+            "options": [
+                "Shorter duration",
+                "Longer duration",
+                "Lower wind speed"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The thermal wind is:",
+            "options": [
+                "The wind that blows because of thermals",
+                "The warm wind that blows down the hill on the leeward side.",
+                "The wind which must be added vectorially to the lower level geostrophic wind to obtain the upper level geostrophic wind"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "On a weather map if isobars are closely packed, the surface winds are likely to be",
+            "options": [
+                "Light and parallel to isobars",
+                "Strong and parallel to isobars",
+                "Strong and blowing across the isobars"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Anabatic wind occurs",
+            "options": [
+                "At night",
+                "Any time of day and night",
+                "During day"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Anabatic wind is stronger than katabatic",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Katabatic wind is down slope cold wind due to nocturnal cooling",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Katabatic wind occur due to sinking of cold air down the hill slope",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Anabatic wind occur due to downward movement of air along valley",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Sea breeze is stronger than land breeze",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The wind blows clockwise around a low in N-hemisphere",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The wind blows clockwise around a low in S-hemisphere",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The wind blows anticlockwise around a low in N-hemisphere",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The wind blows anticlockwise around a low in S-hemisphere",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The resultant wind that blows under the influence of pressure gradient force, geostrophic force and cyclostrophic force is called",
+            "options": [
+                "Gradient wind",
+                "Geostrophic wind",
+                "Cyclostrophic wind"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Due to friction, from day to night for an isobaric pattern (in N hemisphere) the surface wind backs and weakens",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The wind which spirals inward counter-clockwise in the N Hemisphere are associated with",
+            "options": [
+                "Turbulence",
+                "High pressure area",
+                "Low pressure area"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Lower level wind 05010 kt, upper level wind 23005 kt, what is the thermal wind",
+            "options": [
+                "05005 kt",
+                "23015 kt",
+                "05015 kt"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A change in wind direction from 310° to 020° is",
+            "options": [
+                "Backing",
+                "Veering"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A change from 270° to 250° is",
+            "options": [
+                "Backing",
+                "Veering"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Sudden change in wind speed form 10kt to 30kt an then 15 kt are",
+            "options": [
+                "Gust",
+                "Squall",
+                "Gale"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Sudden change in wind speed from 10 kt to 30 kt for 2 -3 minutes",
+            "options": [
+                "Squall",
+                "Gust"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "A significant wind shear is generally associated with TS or line squall",
+            "options": [
+                "False",
+                "True"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Cyclostrophic wind gives a good approximation of the 2000′ wind in an intense tropical storm",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Rotor clouds have extremely turbulent flying conditions",
+            "options": [
+                "False",
+                "True"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Friction causes winds to flow cross isobaric by _____ over land and ____ over sea",
+            "options": [
+                "20°/10°",
+                "30°/15°",
+                "40°/30°"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "If the S is warmer than the N, level by level, from surface up to higher levels, then the ____ wind will strengthen with height with no change in direction in N hemisphere.",
+            "options": [
+                "Ely",
+                "Wly",
+                "Sly",
+                "Nly"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Gradient wind is ____ of the geostrophic wind in an anticyclone",
+            "options": [
+                "Under estimate",
+                "Accurate",
+                "Over estimate"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Gale is",
+            "options": [
+                "Persistent strong winds with mean speed 44 kt, associated with thunderstorm",
+                "Marked increase in wind speed lasing few minutes associated with CB or DS",
+                "Persistent strong winds exceeding 33 kt, associated with depression"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In N hemisphere thermal wind is parallel to  ____ with low value to left",
+            "options": [
+                "Isobars",
+                "Isotherms",
+                "Isallobars"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The inertial flow is",
+            "options": [
+                "cyclonic in both the Hemispheres",
+                "anti cyclone in both the Hemispheres",
+                "anti cyclonic around an anticyclone"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Upper level wind is 24025 kt, lower level wind is 06015 kt, the thermal wind is?",
+            "options": [
+                "16010 kt",
+                "24040 kt",
+                "24010 kt"
+            ],
+            "correctAnswer": 1
+        }
+    ],
+    "Visibility and Fog": [
+        {
+            "question": "Fog is reported when visibility is reduced to",
+            "options": [
+                "Less than 1000 m",
+                "1000 m",
+                "1000 to 2000"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "RVR is reported when visibility falls below",
+            "options": [
+                "500 m",
+                "1000 m",
+                "1500 m",
+                "2000 m"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Radiation fog occurs",
+            "options": [
+                "Over land",
+                "Over sea",
+                "During day"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "When visibility reduces between 5000m and 1000m and RH is almost 100%, it is",
+            "options": [
+                "Mist",
+                "Haze",
+                "Fog"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Radiation Fog forms over N India during",
+            "options": [
+                "May to June",
+                "Dec to Feb",
+                "Oct to Nov"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Warm and moist air moving over a cold ground gives rise to:",
+            "options": [
+                "Thunder clouds",
+                "Fog and stratus",
+                "Frontal clouds"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Warm and moist air moving over a cold surface causes",
+            "options": [
+                "Radiation Fog",
+                "Advection Fog",
+                "Frontal Fog"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The radiation fog forms due to",
+            "options": [
+                "Heating of the earth during day",
+                "Radiational cooling of earth at night",
+                "Advection of cold air"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The radiation fog activity increases after the passage of a",
+            "options": [
+                "WD",
+                "Depression",
+                "Col"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Radiation fog is essentially a ______ phenomena",
+            "options": [
+                "Nocturnal",
+                "Dusk",
+                "Day"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The radiation fog forms over",
+            "options": [
+                "Water",
+                "Land",
+                "Both"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The _____ fog forms due to horizontal movement of warm moist air over cold surface",
+            "options": [
+                "Radiation",
+                "Advection",
+                "Frontal"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Advection fog forms during",
+            "options": [
+                "night only",
+                "day time only",
+                "any time of day and night"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "For formation of Radiation fog",
+            "options": [
+                "There should be sufficient moisture in atmosphere, cloudy sky, nil wind",
+                "There should be sufficient moisture in atmosphere, clear sky, light wind",
+                "There should be sufficient moisture in atmosphere, clear sky, strong wind"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Instrument used for measuring visibility is called",
+            "options": [
+                "Visiometer",
+                "Transmissometer",
+                "Ceilometer"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Advection fog forms",
+            "options": [
+                "over sea",
+                "over land",
+                "both over land and sea"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Fog is ______ cloud on ground",
+            "options": [
+                "Stratocumulus",
+                "Stratus",
+                "Nimbostratus"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Frontal Fog is more common with a",
+            "options": [
+                "Western Disturbance",
+                "Cyclone",
+                "Warm Front",
+                "Cold Front"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The favourable pressure system for formation of fog is",
+            "options": [
+                "Lows and Cols",
+                "High and Trough",
+                "Lows and Ridges",
+                "Highs and Cols"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Thermal processes/temperature distribution which favours formation of fog is",
+            "options": [
+                "Isothermal",
+                "Adiabetic",
+                "Inversion",
+                "SALR"
+            ],
+            "correctAnswer": 2
+        }
+    ],
+    "Clouds": [
+        {
+            "question": "Drizzle occurs from",
+            "options": [
+                "CS",
+                "ST",
+                "NS",
+                "CU"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Altostratus (AS) is",
+            "options": [
+                "Low cloud of sheet type",
+                "A medium cloud of sheet type",
+                "A cloud of large vertical growth",
+                "A high cloud of sheet type"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Showers occurs from",
+            "options": [
+                "CU",
+                "CB",
+                "AS",
+                "AC"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Heavy icing is possible in",
+            "options": [
+                "CI",
+                "CS",
+                "ST",
+                "CB"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "To avoid icing in cloudy conditions, a pilot is advised to fly through a cloud which shows optical phenomena",
+            "options": [
+                "Halo",
+                "Corona",
+                "With multi-coloured clouds"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Dark gray cloud giving continuous rain is called",
+            "options": [
+                "AS",
+                "NS",
+                "ST",
+                "CB"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A uniform layer of cloud resembling fog but not on the ground",
+            "options": [
+                "AS",
+                "NS",
+                "ST"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The clouds composed of ice crystals having feathery appearance",
+            "options": [
+                "CI",
+                "CS",
+                "AS"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "NS clouds occur",
+            "options": [
+                "At cold front",
+                "At warm front"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Halo is associated with the cloud",
+            "options": [
+                "AC",
+                "AS",
+                "CS",
+                "CI"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Corona is associated with the cloud",
+            "options": [
+                "AS",
+                "AC",
+                "CC",
+                "CS"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Lenticular clouds indicate presence of",
+            "options": [
+                "Warm front",
+                "Cold front",
+                "Mountain waves"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The lowest level below which condensation trails will not form is",
+            "options": [
+                "Mintra level",
+                "Drytra level",
+                "Maxtra level"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Rain falling from cloud but not reaching ground is",
+            "options": [
+                "Virgo",
+                "Virga",
+                "Mirage"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "CB with distinct anvil is called",
+            "options": [
+                "Castellaneous",
+                "Capillatus",
+                "Uncinus"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Cloud ceiling is the height of the cloud covering",
+            "options": [
+                "3-4/8",
+                "8/8",
+                "5/8 or more"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "No condensation trails occur above",
+            "options": [
+                "Maxtra level",
+                "Dytra level",
+                "Mintra level"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Cloud of operational significance has base below _____ m or below the highest minimum sector altitude, which is greater",
+            "options": [
+                "1500",
+                "2000",
+                "1000"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "AC cloud with cumuliform protuberances are indicative of",
+            "options": [
+                "Stability",
+                "Instability",
+                "Neurality"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Hail may be experienced under the anvil of a CB",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        }
+    ],
+    "Stability": [
+        {
+            "question": "DALR = 9.8 °C, ELR = 6.8 °C ; atmosphere is",
+            "options": [
+                "stable",
+                "unstable",
+                "indifferent"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "SALR = 5.5 °C, ELR = 4.5 °C ; atmosphere is",
+            "options": [
+                "unstable",
+                "stable",
+                "different"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "DALR > ELR > SALR",
+            "options": [
+                "conditionally unstable",
+                "latently stable",
+                "potentially stable"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Dry air is unstable when:",
+            "options": [
+                "ELR=DALR",
+                "ELR>DALR",
+                "ELR<DALR"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The saturated air is said to be unstable if",
+            "options": [
+                "SALR=ELR",
+                "SALR<ELR",
+                "SALR>ELR"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "If ELR = SALR = DALR the atmosphere is",
+            "options": [
+                "Stable",
+                "Instable",
+                "Indifferent"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "DALR means:",
+            "options": [
+                "The rate at which temperature of unsaturated parcel of air falls with height when to ascent adibetically",
+                "The rate at which temp falls with height",
+                "The rate at which ascending parcel of saturated air cools"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Surface temp. is 30 °C. Assuming DALR what is the temperature of 2 km",
+            "options": [
+                "18° C",
+                "10° C",
+                "42° C"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "An Isothermal atmosphere is:",
+            "options": [
+                "Stable",
+                "Unstable",
+                "Neutral"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "If ELR is less than SALR, the atmosphere is said to be:",
+            "options": [
+                "Absolutely unstable",
+                "Conditional unstable",
+                "Absolutely stable"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "DALR is approximately",
+            "options": [
+                "5° C/km",
+                "15° C/km",
+                "10° C/km"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "SALR at mean sea level is about",
+            "options": [
+                "10° C/Km",
+                "5° C/Km",
+                "5° F/Km"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "SALR approaches DALR",
+            "options": [
+                "at 0° C",
+                "at - 15° F",
+                "at -40° C"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Dry air having a temperature of 35° C on surface when forced to rise adiabatically by 1 km would attain a temperature of",
+            "options": [
+                "29° C",
+                "25° C",
+                "45° C"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Inversion in the atmosphere indicates",
+            "options": [
+                "Stability",
+                "Instability",
+                "Neutral"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Inversion is _______ Lapse Rate (LR)",
+            "options": [
+                "Positive",
+                "Negative",
+                "Neutral"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Environmental LR can be more than DALR",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The process which to a large extent determines the vertical distribution of temperature in atmosphere is",
+            "options": [
+                "Adiabatic",
+                "Isothermal",
+                "Isentropic"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Rise in temperature with height is",
+            "options": [
+                "Inversion",
+                "Lapse",
+                "Normal"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Inversion is common in",
+            "options": [
+                "Post Monsoon",
+                "Monsoon",
+                "Winters"
+            ],
+            "correctAnswer": 2
+        }
+    ],
+    "Optical Phenomena": [
+        {
+            "question": "Aurora Australis occur in the",
+            "options": [
+                "S hemisphere",
+                "N hemisphere",
+                "Equator"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Aurora Australis called _____ Lights",
+            "options": [
+                "Northern",
+                "Southern",
+                "Temperate"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Aurora Borealis occur in the",
+            "options": [
+                "S hemisphere",
+                "N hemisphere",
+                "Equator"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Aurora Borealis are called ______ Lights",
+            "options": [
+                "Northern",
+                "Southern",
+                "Temperate"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Corona occur in ______ clouds",
+            "options": [
+                "AS",
+                "NS",
+                "CS"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Bishop’s ring is due to the diffraction of light by fine particles of",
+            "options": [
+                "Water",
+                "dust",
+                "ice"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The radius of the Bishop’s ring is about",
+            "options": [
+                "32°",
+                "22°",
+                "42°"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Superior Mirage occurs marked",
+            "options": [
+                "Lapse",
+                "Isothermal",
+                "Inversion"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Inferior Mirage occurs when there is",
+            "options": [
+                "Lapse",
+                "Isothermal",
+                "Inversion"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Corona are formed due to the ______ of light",
+            "options": [
+                "Refraction",
+                "Diffraction",
+                "Scattering"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Corona are formed due to light, passing through",
+            "options": [
+                "Mist only",
+                "Fog only",
+                "small water or ice particles only",
+                "Any one of all these"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Halo is produced by",
+            "options": [
+                "Refraction",
+                "Diffraction",
+                "Scattering"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Halo is produced when light passes through",
+            "options": [
+                "water particles",
+                "ice crystals",
+                "both"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Halo occur in the cloud",
+            "options": [
+                "AS",
+                "NS",
+                "CS"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Halo is luminous ring of ______ radius",
+            "options": [
+                "32°",
+                "22°",
+                "42°"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Halo round the sun shows a pure clear _____ on the outside.",
+            "options": [
+                "Red",
+                "Yellow",
+                "Violet"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Halo signifies predominance in the cloud of",
+            "options": [
+                "Supercooled water drops",
+                "Ice crystals",
+                "Both"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The cloud which cause Halo has ______ chances of ice accretion",
+            "options": [
+                "negligible",
+                "maximum",
+                "medium"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Sometimes a halo with a radius of ______ is observed, called Large Halo",
+            "options": [
+                "32°",
+                "42°",
+                "22°"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Halo occurs from ____ cloud",
+            "options": [
+                "Low",
+                "Medium",
+                "High"
+            ],
+            "correctAnswer": 2
+        }
+    ],
+    "Precipitation": [
+        {
+            "question": "When supercooled water drops and ice particles co-exist the ice crystals grow at the expense of the water drops because",
+            "options": [
+                "Saturation vapour pressure over water drops is less than over the ice crystals",
+                "Saturation vapour pressure over the ice crystals is less than over water drops",
+                "The ice crystals convert into water drops"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The cloud whose tops extend well above the freezing level are called",
+            "options": [
+                "Warm clouds",
+                "Cold clouds",
+                "Moderate clouds"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The clouds whose tops do not extend to the freezing level are called",
+            "options": [
+                "Warm clouds",
+                "Cold clouds",
+                "Moderate clouds"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Coalescence Theory explains occurrence of rainfall from the",
+            "options": [
+                "Warm clouds",
+                "Cold clouds",
+                "Both types of Clouds"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Ice crystal Theory explains occurrence of rainfall from the",
+            "options": [
+                "Warm clouds",
+                "Cold clouds",
+                "Both types of clouds"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Giant Nucleus Theory explains occurrence of rainfall over",
+            "options": [
+                "Maritime areas",
+                "Inland areas",
+                "Hilly areas"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Very heavy precipitation as showers over a short period is called",
+            "options": [
+                "Flash floods",
+                "Cloud Burst",
+                "Orographic Rain"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Rain shadow area is on the _____ of the mountain range.",
+            "options": [
+                "Top",
+                "Windward side",
+                "Leeward side"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Sleet is a mixture of",
+            "options": [
+                "Hail & Snow",
+                "Rain & Snow",
+                "Frozen Rain"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Rainfall in the tropics is more in",
+            "options": [
+                "Winters",
+                "Summers",
+                "Post monsoon"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Rainfall in the tropics is more in the",
+            "options": [
+                "Morning",
+                "Afternoon",
+                "Night"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Rainfall in the temperature latitudes is more in",
+            "options": [
+                "Winters",
+                "Summers",
+                "Spring"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Over J&K and western Himalayas Rainfall is more in",
+            "options": [
+                "Winters",
+                "Summers",
+                "Post monsoon"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Rainfall over coastal areas is more in the",
+            "options": [
+                "Evening",
+                "Afternoon",
+                "Night & early morning"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Areas to the _____ of western Ghats of India are rain shadow areas",
+            "options": [
+                "W",
+                "S",
+                "E"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "A sudden rise in the level of rivers or streams causing floods is called",
+            "options": [
+                "Cloud Burst",
+                "Catchment flooding",
+                "Flash Floods"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Artificial rain making is also termed as",
+            "options": [
+                "Simulation",
+                "Cloud seeing",
+                "Nucleation"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Fog can be dispersed for  short period by artificial stimulation",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Showery precipitation occurs from",
+            "options": [
+                "NS",
+                "AC",
+                "CB"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "A day is called Rainy day when rainfall in 24 hr is ______ mm or more",
+            "options": [
+                "1.5",
+                "2",
+                "2.5"
+            ],
+            "correctAnswer": 2
+        }
+    ],
+    "Ice accretion": [
+        {
+            "question": "Hoar frost occurs on airframe in clear air when the temperature of air frame is",
+            "options": [
+                "below the frost point",
+                "frost point",
+                "just above the frost point"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In clouds at temperatures below 0°C and aircraft may encounter icing of the type",
+            "options": [
+                "only Glazed",
+                "only Rime",
+                "intermediate between those"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Opaque Rime ice is",
+            "options": [
+                "Light porous",
+                "Solid",
+                "Mixture of porous and solid"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Rime is formed by freezing of ____ supercooled water droplets on airframe when air is flying through clouds",
+            "options": [
+                "Small",
+                "Large",
+                "Medium"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Glazed ice is formed by freezing of _____ supercooled water droplets on airframe and aircraft is flying through clouds",
+            "options": [
+                "Small",
+                "Large",
+                "Medium"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The _____ ice poses serious aviation hazard",
+            "options": [
+                "Rime",
+                "Hoar Frost",
+                "Glazed"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Airframe icing occurs below 0°C. Its probability of occurrence decreases progressively to -20°C, as at lower temperatures the proportion of super-cooled water drops in a cloud",
+            "options": [
+                "Increases",
+                "Decreases",
+                "Does not change"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "CI, CS and CC clouds consist mostly ice crystals, Icing hazard is therefore",
+            "options": [
+                "Maximum",
+                "Medium",
+                "Negligible"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "AS, NS consist of supercooled water drops and ice crystals in varying proportion icing is possible.",
+            "options": [
+                "Maximum",
+                "Light or moderate",
+                "Negligible"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In AC clouds _____ icing is possible in mountainous areas.",
+            "options": [
+                "Light",
+                "Moderate",
+                "Severe"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In TCU icing may range from light to severe type at least up to _____ level.",
+            "options": [
+                "-40°C level",
+                "30°C level",
+                "-20°C level"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In CB icing may range from light to severe type up to -20°C level. Below this temperature severe icing is",
+            "options": [
+                "not significant",
+                "significant",
+                "maximum"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Liquid water content is an important factor in icing. As the maximum water concentration is around ______ , maximum ice formation in clouds may also be expected around the level.",
+            "options": [
+                "-25°C level",
+                "-20°C level",
+                "-15°C level"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Carburetor icing occurs when air from intake passes through a ventury (choke) and causes expansional cooling and vaporization of fuel. Serious icing can occur can occur at extreme temperatures.",
+            "options": [
+                "13°C",
+                "30°C to - 10°C",
+                "20°C"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "______ occurs in a moist cloudless air on an aircraft surface having temp, below 0°C, due to sublimation of water vapour onto feathery ice crystals.",
+            "options": [
+                "Rime",
+                "Glazed",
+                "Hoar Frost"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "_____ occurs in St, Sc, Ac, Au, Cu, Ns at temperature -10 to -40°C and in Cb at temperature 20 to -40°C",
+            "options": [
+                "Rime",
+                "Glazed",
+                "Hoar Frost"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In clouds _____ occurs when a wide range of water drop sizes are present at temperatures between 0°C and -40°C",
+            "options": [
+                "Rime",
+                "Glazed",
+                "Mixture of rime and clear ice"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "_____ occurs in AS, NS, AC and towering CU or CB between 0°C and -20°C, in warm front below 0°C, especially if the aircraft has rapidly descended from a colder region.",
+            "options": [
+                "Glazed",
+                "Rime",
+                "Mixture of Rime and Clear ice"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "When fog freezes on parked aircraft it produces",
+            "options": [
+                "Hoar Frost",
+                "Rime",
+                "Clear ice"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Icing ____ the stalling speed appreciably",
+            "options": [
+                "Decreases",
+                "Increases",
+                "Does not increase/decrease"
+            ],
+            "correctAnswer": 1
+        }
+    ],
+    "Thunderstorms": [
+        {
+            "question": "The condition necessary for the formation of a thunderstorm are:",
+            "options": [
+                "Steep lapse rate, strong winds",
+                "Shallow lapse rate, adequate supply of moisture",
+                "Steep lapse rate, adequate supply of moisture and trigger action"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Hail is most likely to fall from a cloud",
+            "options": [
+                "Having layers",
+                "Composed of Ice crystals",
+                "Having strong vertical development"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Norwesters are",
+            "options": [
+                "The western disturbances which affect NW India",
+                "Severe thunderstorms which occur over NE India during hot weather period",
+                "Sever thunderstorms which occur over Peninsula during hot weather period"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Duststorm usually occurs over NW India during",
+            "options": [
+                "Post-monsoon",
+                "Winter",
+                "Pre-Monsoon"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "A ‘mature’ thunderstorm has strong",
+            "options": [
+                "updraft only",
+                "downdraft only",
+                "updrafts and downdrafts"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Aircraft icing is most favoured in the cloud which have temperatures ranging between",
+            "options": [
+                "-20°C and -40°C",
+                "0°C and -20°C",
+                "below -40°C"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A short duration, showery precipitation is associated with",
+            "options": [
+                "ST",
+                "AS",
+                "CB"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Hail is",
+            "options": [
+                "Solid precipitation commonly occurring over the mountainous regions in the winters",
+                "Frozen or partly frozen rain falling from sheet type of clouds",
+                "Solid precipitation falling from a deep convective cloud"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The most hazardous cloud for variation is",
+            "options": [
+                "CB",
+                "CU",
+                "NS"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The life of a Cb cell is usually",
+            "options": [
+                "7 to 8 hrs",
+                "3 to 4 hrs",
+                "2 -3 hr"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Generally the severest activity of a, heat type, TS is for",
+            "options": [
+                "2 hrs",
+                "30 to 45 min",
+                "3 to 4 hr"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Norwesters occur during",
+            "options": [
+                "Winter",
+                "Hot weather",
+                "Monsoon",
+                "Post-Monsoon"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Norwesters affect",
+            "options": [
+                "N India",
+                "Bengal, Bihar, Orissa and Assam",
+                "Central India"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The trigger action may take place due to",
+            "options": [
+                "Clear night sky, no wind",
+                "Orographic lifting",
+                "high pressure"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Norwesters normally occur during",
+            "options": [
+                "Mornings",
+                "Afternoons",
+                "Nights"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Norwesters originates over",
+            "options": [
+                "Chota-Nagpur hills",
+                "Deccan Plato",
+                "Khasi hills"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Andhi (blinding storms) occur generally over",
+            "options": [
+                "S India",
+                "N India",
+                "NE India"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Wind speed in Light DS is",
+            "options": [
+                "25 kt",
+                "30 kt",
+                "up to 21 kt"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The diametre of and Macroburst",
+            "options": [
+                "‹ 4 km",
+                "4 km or more",
+                "› 8 km"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "For detecting precipitation a Radar wavelength in the range _____ is suitable",
+            "options": [
+                "30 to 200 mm",
+                "400 - 500 mm",
+                "600 - 700 mm"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "For airborne radars wavelength generally used",
+            "options": [
+                "20 mm",
+                "40 mm",
+                "60 mm"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Norwesters occur during",
+            "options": [
+                "Jan-Feb",
+                "Mar-May",
+                "June-Sep",
+                "Oct-Dec"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The diameter of Microburst is",
+            "options": [
+                "less than 4 km",
+                "less than 2 km",
+                "less than 6 km"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The wavelength of TS detection X band radar is",
+            "options": [
+                "10 mm",
+                "20 mm",
+                "30 mm"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The wavelength of storm detection S band radar is",
+            "options": [
+                "50 mm",
+                "100 mm",
+                "200 mm"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Over plains TS mostly occur during the",
+            "options": [
+                "afternoon",
+                "night",
+                "early morning"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Over valley and foot hills TS generally occur during",
+            "options": [
+                "afternoon",
+                "night & early morning"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Over the sea TS are more frequent",
+            "options": [
+                "afternoon",
+                "night",
+                "early morning"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The life of Mesoscale Convective Complex TS is",
+            "options": [
+                "2-3 hr",
+                "3-4 hr",
+                "6 to 24 hr"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Loud peals of thunder, frequent flashes of lightning, moderate or heavy showers accompanies by the light hail with maximum wind speed 15-40 kt is classified as",
+            "options": [
+                "Light TS",
+                "Moderate TS",
+                "Severe TS"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "For a severe TS one of the requirements is strong Wind Shear",
+            "options": [
+                "Horizontal",
+                "Vertical",
+                "Slant"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Severe TS cells are tilted",
+            "options": [
+                "in vertical",
+                "to the south",
+                "to the North"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "When flying through on active TS, lighting strikes are most likely",
+            "options": [
+                "Above 5000 ft and under the anvil",
+                "In the clear air below the cloud in rain",
+                "In the temperature band between +10° and -10°C",
+                "At or about 10000 ft"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Hazards of the mature stage of a TS cell include lighting, turbulence and;",
+            "options": [
+                "Microburst, wind-shear and anvil",
+                "Icing, microburst and WS",
+                "Icing, drizzle and microburst",
+                "WS, hail and fog"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Hail grows by",
+            "options": [
+                "freezing as it leaves the cloud",
+                "up and down forces in CU cloud",
+                "collision with ice crystals",
+                "collision with supercooled water drops"
+            ],
+            "correctAnswer": 3
+        }
+    ],
+    "Air Mass": [
+        {
+            "question": "The airmass which originates at sea in high Latitudes is called",
+            "options": [
+                "Polar maritime",
+                "Tropical continental",
+                "Tropical maritime"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The airmass which originates over equatorial region is",
+            "options": [
+                "Warm and dry",
+                "Warm and moist",
+                "Cold and dry"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "If the advancing cold front is colder than the cool air mass of the warm front, the advancing cold from undercuts and lifts both the warm and cool air masses of the warm front. This is",
+            "options": [
+                "Warm Occlusion",
+                "Cold Occlusion"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The airmass which originated over land area located in polar region is:",
+            "options": [
+                "Warm and dry",
+                "Warm and moist",
+                "Cold and dry"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "If a warm airmass overtakes a cold air mass, it is called",
+            "options": [
+                "Cold Front",
+                "Warm Front",
+                "Occluded Front"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "At warm front",
+            "options": [
+                "Warm air overtakes the cold air",
+                "Cold air undercuts the warm air"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The conditions are always unstable at a",
+            "options": [
+                "Cold front",
+                "Warm front"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Sometime Line squall about 100-300 km ahead of a",
+            "options": [
+                "Warm front",
+                "Cold front"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Precipitation occurs over a belt of 30-50 km on both side of front",
+            "options": [
+                "Cold front",
+                "Warm front"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Cold front moves at _____ the speed of a warm front moves",
+            "options": [
+                "Same",
+                "Double",
+                "Half"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Line Squalls occur _____ of cold front",
+            "options": [
+                "Ahead",
+                "Behind",
+                "At the"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Front are associated with",
+            "options": [
+                "Tropical cyclone",
+                "Monsoon Depression",
+                "Extra-tropical cyclones"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "CB, Roll-type clouds, SC, AC with embedded CB are associated",
+            "options": [
+                "Cold front",
+                "Warm front"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The surface of discontinuity between the Polar Ely and the temperate Wly is called",
+            "options": [
+                "Equatorial Front",
+                "Tropopause",
+                "Polar front"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The air mass which originated from sea area located in lower Lat is",
+            "options": [
+                "Warm and Dry",
+                "Warm and moist",
+                "Cold and moist"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "WDs approach India as",
+            "options": [
+                "Cols",
+                "Occluded Fronts",
+                "Highs"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Maximum WDs occur in",
+            "options": [
+                "Summers",
+                "Post monsoon",
+                "Winters"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Ahead of a warm front the surface wind",
+            "options": [
+                "Backs & weakens",
+                "Veers & Strengthens",
+                "Backs & Strengthens"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "On approach of a Warm Front temperature",
+            "options": [
+                "Full",
+                "Rise",
+                "Remain same"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "CI, CS, AS, NS, ST in sequence are associated with the front",
+            "options": [
+                "Warm",
+                "Cold",
+                "Occluded"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "During the passage of a Cold Front winds",
+            "options": [
+                "Suddenly become squally",
+                "Back and weaken",
+                "Veer and are of moderate strength"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Visibility is poor in a Warm Front",
+            "options": [
+                "Ahead",
+                "Ahead & During",
+                "After & During"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Fog occurs in Cold Front",
+            "options": [
+                "Ahead",
+                "During",
+                "After"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "WD is a ______ front",
+            "options": [
+                "Cold",
+                "Warm",
+                "Occluded"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "FZRA and FZFG occur ______ of a warm front",
+            "options": [
+                "Ahead",
+                "During",
+                "After"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Precipitation ceases after the passage of a front",
+            "options": [
+                "Cold",
+                "Warm",
+                "Occluded"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "During the approach of a Warm Front wind",
+            "options": [
+                "Backs",
+                "Veers",
+                "Does not change"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "A WD with two or more closed isobars, at 2 hPa interval, it is termed as",
+            "options": [
+                "Troughs in Westerlies",
+                "Western Depression",
+                "Western Cyclone"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A WD originate over",
+            "options": [
+                "Baluchistan",
+                "Caspian sea",
+                "Mediterranean, Caspian and Black sea"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Induced lows develop to the _____ of a WD",
+            "options": [
+                "N",
+                "S",
+                "NE"
+            ],
+            "correctAnswer": 1
+        }
+    ],
+    "Jet Stream": [
+        {
+            "question": "The arbitrary lower limit of jet core velocity has been assigned by WMO as",
+            "options": [
+                "60 kt",
+                "60 m/s",
+                "70 m/s"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Jet stream has",
+            "options": [
+                "one maxima",
+                "one or more maxima",
+                "only two maxima"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The vertical wind shear in Jet stream is about",
+            "options": [
+                "5m/s km",
+                "6m/s km",
+                "8m/s km"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Compared to horizontal wind shear the vertical wind shear in a Jet stream is",
+            "options": [
+                "weaker",
+                "stronger",
+                "same"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In a jet stream, the path of the maximum speed is known as",
+            "options": [
+                "Core",
+                "Axis",
+                "Jet streak"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The wind speed along the axis of a jet stream is always",
+            "options": [
+                "Uniform",
+                "Not uniform"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Along the axis of a jet stream there are centres of high speed winds, these are called",
+            "options": [
+                "Jet streaks",
+                "Core",
+                "Axis"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In a wavy jet the Jet streaks are located over or near the",
+            "options": [
+                "Ridge",
+                "Trough",
+                "Between Trough and Ridge"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Sub-tropical Jet stream (STJ) is",
+            "options": [
+                "Westerly",
+                "Easterly",
+                "Southerly"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The normal position of Sub-tropical Jet Stream is",
+            "options": [
+                "30°N",
+                "27°N",
+                "35°N"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The southern most position of STJ is February is",
+            "options": [
+                "22°N",
+                "20°N",
+                "18°N"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The STJ affects India from",
+            "options": [
+                "Jun to Jul",
+                "Oct to May",
+                "Aug to Sep"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "STJ has a layered structure. There are often two layers of max wind to the ____ of jet core",
+            "options": [
+                "S",
+                "N",
+                "SW"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The STJ strengthens",
+            "options": [
+                "Northwards",
+                "Upstream",
+                "Downstream"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "At and near the STJ the temperature gradient is very",
+            "options": [
+                "Small",
+                "Large",
+                "Moderate"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Vertical wind shear in STJ is greater ______ the core",
+            "options": [
+                "above",
+                "below",
+                "along"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The TJ prevails over the Indian Peninsula from",
+            "options": [
+                "May to Jun",
+                "Sep to Oct",
+                "Jun to Aug"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The TJ is located over the Indian Peninsula, approximately at",
+            "options": [
+                "13°N",
+                "17°N",
+                "18°N"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The TJ is located over Indian, approximately at a height of",
+            "options": [
+                "15 - 16 km",
+                "12 - 13 km",
+                "11 - 12 km"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The TJ is strongest in",
+            "options": [
+                "July - Aug",
+                "Sep to Oct",
+                "June"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In the TJ the wind shears are much _____ than the STJ",
+            "options": [
+                "more",
+                "less",
+                "same"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "TJ is",
+            "options": [
+                "Westerly",
+                "Easterly",
+                "Southerly"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A jet stream can be recognized by",
+            "options": [
+                "High level dust",
+                "High Pressure",
+                "Streaks of CI",
+                "Lenticular clouds"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Flying at right angles to a jet stream with falling pressure you will experience",
+            "options": [
+                "Wind from left",
+                "Increasing head wind",
+                "Increasing tail wind",
+                "Wind from right"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "When and where tropical jet stream occurs",
+            "options": [
+                "All year along equator",
+                "In Middle East in summers",
+                "In winters over Russia",
+                "In summers over SE Asia and Central Africa"
+            ],
+            "correctAnswer": 3
+        }
+    ],
+    "Met Briefing": [
+        {
+            "question": "Who prepares National SIGWX Charts",
+            "options": [
+                "AMOs",
+                "WAFC",
+                "MWOS"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Flight Level of freezing Level is included in _____ SIGWX Charts",
+            "options": [
+                "Medium level charts",
+                "High level charts",
+                "Low level charts"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Fog, Precipitation and weather which reduce visibility below 5000 m is considered Significant weather for",
+            "options": [
+                "All level flights",
+                "High level flights",
+                "Low level flights"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Briefing and Consultation are generally provided to the aircrew ______ hours prior to the scheduled departure",
+            "options": [
+                "3 hr",
+                "5 hr",
+                "6 hr"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "SIGMET information is provided to",
+            "options": [
+                "Low level flights",
+                "All level flights",
+                "High level flights"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "For Low Level flights, and those under Visual Flight Rules, briefing is given up to",
+            "options": [
+                "FL150 or above in mountains",
+                "FL110 above the sea",
+                "FL 120 or over the plains"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The height indications in the Flight Documentation in all en-route Met conditions : eg upper winds, turbulence, cloud base/top etc is",
+            "options": [
+                "Above aerodrome elevation",
+                "Flight Levels",
+                "As requested by the Pilot"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The height indications in the Flight Documentation in all aerodrome Met conditions : eg base and top of clouds",
+            "options": [
+                "Above aerodrome elevation",
+                "Flight Levels",
+                "As requested by the Pilot"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "For National Flights the Documents provided are –",
+            "options": [
+                "National SIGWX charts only",
+                "WAFC upper wind and temp. charts only",
+                "both WAFC upper wind and temp. charts and National SIGWX charts"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "For National Flights the winds and temperatures are provided for LL Flights for altitudes",
+            "options": [
+                "600, 1500 and 300 m",
+                "3000 ft, 5000 ft, 10,000 ft",
+                "600, 1000 and 500 m"
+            ],
+            "correctAnswer": 0
+        }
+    ],
+    "Mountain Waves": [
+        {
+            "question": "For mountain waves to form there should be flow of air across the ridge, generally within _____ of the perpendicular to the ridge.",
+            "options": [
+                "30°",
+                "45°",
+                "60°"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "For mountain waves to form the wind speed for small mountains should be atleast",
+            "options": [
+                "15 m/s",
+                "10 m/s",
+                "7 m/s"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "For mountain waves to form the wind speed for large mountains should be atleast",
+            "options": [
+                "15 m/s",
+                "10 m/s",
+                "7 m/s"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "For mountain waves to form there should be _____ air beow the ridge and less stable air above.",
+            "options": [
+                "Stable",
+                "Unstable",
+                "Indifferent"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The worst kind of turbulence is encountered in the vicinity of rotor clouds.",
+            "options": [
+                "Rotar Clouds",
+                "Lenticular Clouds",
+                "Cap Clouds"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In Mountain waves the Rotor clouds form in",
+            "options": [
+                "Troughs",
+                "Ridges",
+                "Valley"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Clear air turbulences is often encountered",
+            "options": [
+                "At the boundary of a jet stream",
+                "In the wake of a passing airplane",
+                "In the wake of a larger airplane at take off and landing"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Most CAT occurs on the _____ of a jet stream and in the vicinity of upper level frontal zones where temperature contrasts are strong.",
+            "options": [
+                "Fringes",
+                "Within the core",
+                "Axis"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "CAT is the bumpiness experienced by aircraft at high altitudes. Over North India its maximum frequency is during:",
+            "options": [
+                "Oct - May",
+                "Jul - Aug",
+                "Jun - Sep"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "When approaching an area where mountain waves have been reported, a pilot should expect:",
+            "options": [
+                "Possible presence of roll clouds and lenticular clouds",
+                "Intense up draughts and down draughts on the less side of the mountains.",
+                "Moderate to severe turbulences as far as 20 to 30 nm from range on leeward side.",
+                "All the above"
+            ],
+            "correctAnswer": 3
+        }
+    ],
+    "Tropical System": [
+        {
+            "question": "Wind speed in a tropical severe cyclone is:",
+            "options": [
+                "27 - 33 kt",
+                "48 - 63 kt",
+                "17 - 27 kt"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Fronts are characteristics of:",
+            "options": [
+                "Tropical cyclone",
+                "Extra - tropical depressions",
+                "Monsoon depressions"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In a mature tropical cyclone, the eye area is characterised by:",
+            "options": [
+                "moderate winds and heavy rains",
+                "hurricane force winds and squalls",
+                "calm wind, little clouding and practically no rainfall"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Cyclonic storm across Tamil Nadu coast in:",
+            "options": [
+                "Oct - Nov",
+                "Jul - Aug",
+                "Feb - May"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Cyclonic storms form over Indian seas during",
+            "options": [
+                "SW monsoon",
+                "Winter Season",
+                "Pre-Monsoon & Post Monsoon"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "TRS occurs over Indian seas in:-",
+            "options": [
+                "Equatorial Region",
+                "5 - 15° N",
+                "0 - 5° N"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In the Bay of Bengal during the months of Jul, August, Monsoon Depression form",
+            "options": [
+                "Over Head Bay",
+                "Central Bay",
+                "South Bay"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In a monsoon depression maximum weather occurs in",
+            "options": [
+                "SE sector",
+                "NW sector",
+                "SW sector"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "During re-curvature maximum weather in a monsoon depression occur in",
+            "options": [
+                "SE sector",
+                "NW sector",
+                "SW sector",
+                "NE sector"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "On whatever compass course the cyclone is approached, strong winds from the port indicate that the centre  lies somewhere",
+            "options": [
+                "Ahead",
+                "Behind",
+                "Port",
+                "Starboard"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The well developed extra tropical cyclonic storm is composed of two main frontal systems and an occluded front, which varies in extent:",
+            "options": [
+                "A stationery Front followed by a warm front",
+                "A low with a warm front radiating out Southwards followed by a cold front.",
+                "A warm front and an occluded front",
+                "None of the above"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Cyclonic storms are confined almost entirely to the",
+            "options": [
+                "Latitudes near Equator",
+                "Tropical Latitudes",
+                "Polar lat.",
+                "Mid lat."
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The weather expected in a well developed cyclonic storm is:",
+            "options": [
+                "Moderate Weather",
+                "Stormy weather",
+                "Clear skies",
+                "No wind or temperature change"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "After entering land the Cyclones gradually die down",
+            "options": [
+                "True",
+                "False"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The ________ is the most dangerous part of the cyclone is",
+            "options": [
+                "eye wall",
+                "eye",
+                "Outer storm area",
+                "complete cyclone"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "No CS form",
+            "options": [
+                "At poles",
+                "At Equator",
+                "AT Lat 40 deg",
+                "All these"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Average life of a tropical cyclone in India is",
+            "options": [
+                "10 Days",
+                "6-8 Days",
+                "3-4 Days"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "CS in India are mostly of intensity",
+            "options": [
+                "Severe",
+                "Very Weak",
+                "Moderate"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Eye of a CS is surrounded by",
+            "options": [
+                "Shelf Clouds",
+                "Wall Clouds",
+                "Rotor Clouds",
+                "Roll Clouds"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "CS in Indian region are less intense because",
+            "options": [
+                "They have a very short travel over the sea",
+                "Sea surface temp. are not high",
+                "India is close to Equator"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Surge is sudden strengthening of wind in the ______ air mass",
+            "options": [
+                "Same",
+                "Different",
+                "Both"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Surge and Shear Line are features of _______ monsoon",
+            "options": [
+                "Vigorous",
+                "Weak",
+                "Moderate"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Peninsular discontinuity occurs along",
+            "options": [
+                "West Coast",
+                "East coast",
+                "Central Peninsula"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Peninsular discontinuity occurs during",
+            "options": [
+                "Monsoon",
+                "NE Monsoon",
+                "Pre Monsoon"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Surge is also",
+            "options": [
+                "Velocity Divergence",
+                "Velocity Convergence",
+                "lite ITCZ"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In a depression the wind speed is",
+            "options": [
+                "<17 kt",
+                "34 - 47 kt",
+                "17 - 27 kt",
+                "48 - 63 kt"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In a CS the wind speed is",
+            "options": [
+                "<17 kt",
+                "34 - 47 kt",
+                "17 - 27 kt",
+                "28 - 33 kt"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A monsoon depression slopes ______ with height",
+            "options": [
+                "SE",
+                "NW",
+                "SW",
+                "NE"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Average life of a monsoon depression is",
+            "options": [
+                "2 - 3 days",
+                "8 - 9 days",
+                "3 - 5 days",
+                "10 - 12 days"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Monsoon depressions move faster over",
+            "options": [
+                "Sea",
+                "Plains",
+                "Hills",
+                "Rivers"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "For formation of a CS sea surface temperature should be",
+            "options": [
+                "26 - 27° C",
+                "23 - 24° C",
+                "24 - 25° C",
+                "30° C"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In a extra tropical cyclone family there are 3 – 4 CS or depressions, one to the ___ of the other",
+            "options": [
+                "SE",
+                "NW",
+                "SW",
+                "NE"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In TRS the central pressure is about",
+            "options": [
+                "1002 - 1010 hPa",
+                "1000 - 900 hPa",
+                "1010 - 1020 hPa"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "TRS develop over",
+            "options": [
+                "Sea",
+                "Land",
+                "Islands",
+                "at equator"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "TRS develop over ______ deg Lat",
+            "options": [
+                "0 - 5",
+                "5 -15",
+                "25 - 30",
+                "30 - 40"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In TRS pressure gradient is very steep up to a radius of",
+            "options": [
+                "30 km",
+                "50 km",
+                "100 km",
+                "400 km"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Extra Tropical Storms originate in",
+            "options": [
+                "Equatorial Front",
+                "Tropical Front",
+                "Polar Front"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Extra-tropical Storms generally move in the direction",
+            "options": [
+                "S to E",
+                "W to E",
+                "S to W",
+                "E to W"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A Tropical Cyclone moves ______ in a day",
+            "options": [
+                "300 - 500 km",
+                "500 -700 km",
+                "700 - 900 km"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "A Tropical CS has outer storm area of about",
+            "options": [
+                ">400 km",
+                ">700 km",
+                ">900 km"
+            ],
+            "correctAnswer": 0
+        }
+    ],
+    "Climatology of India": [
+        {
+            "question": "During winters",
+            "options": [
+                "Advection fog occurs over northern & central parts of India",
+                "Radiation fog occurs in southern parts of India",
+                "Activation of Radiation fog increases after the passage of a WD over N India"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Low Temperatures and low humidity is the characteristic of",
+            "options": [
+                "Post Monsoon",
+                "Summer",
+                "Monsoon",
+                "Winter"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "The Summer season period is",
+            "options": [
+                "Jan - Feb",
+                "Mar - May",
+                "Jul - Sept",
+                "Oct - Dec"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "During Summer season",
+            "options": [
+                "WDs cause TS/DS over Punjab & Rajasthan",
+                "No WD affects N - parts of county",
+                "Track of WD is southern most"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The monsoon current over the West coast of India is",
+            "options": [
+                "SWly",
+                "SEly",
+                "NEly",
+                "NEly"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Monsoon period is",
+            "options": [
+                "Jan to Feb",
+                "March to May",
+                "Jun to Sep",
+                "Oct to Dec"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The monsoon advances with",
+            "options": [
+                "Bay of Bengal current only",
+                "Arabian Sea current only",
+                "Bay of Bengal and Arabian sea currents"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The rainfall over India during monsoon depends on",
+            "options": [
+                "Low over Pakistan",
+                "Depression over Bay of Bengal",
+                "The position of the axis of Monsoon Trough."
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Rainfall occurs all over the country during monsoon when",
+            "options": [
+                "Axis of MT is in its normal position along Gangetic plains.",
+                "Axis of MT is along Himalayas",
+                "Axis of MT is along Himalayas",
+                "Depression formed over Bay of Bengal"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Break in monsoon occurs when the axis of monsoon trough is along the",
+            "options": [
+                "Gangetic plains",
+                "Foot hills of Himalayas",
+                "Bay of Bengal"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "With a Depression over the Head Bay fair weather during monsoon occurs over",
+            "options": [
+                "Assam",
+                "W Bengal",
+                "Orissa"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Monsoon is also called",
+            "options": [
+                "Pre monsoon",
+                "Rainy season",
+                "Post monsoon"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Autumn Season period is",
+            "options": [
+                "Mar to May",
+                "Jun to Sept",
+                "Oct to Nov",
+                "Jan to Feb"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "During post monsoon, pressure gradient over India is",
+            "options": [
+                "Weak",
+                "steep",
+                "same as winters"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "During monsoon season, low pressure lies over",
+            "options": [
+                "Bay of Bengal",
+                "NE India",
+                "Central India",
+                "Pakistan"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "During vigorous monsoon period the pressure gradient over west coast is",
+            "options": [
+                "Weak",
+                "Steep",
+                "Normal"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Flying in Monsoon from Chennai to Kolkata at 14 km a/c will experience winds",
+            "options": [
+                "Easterly",
+                "Westerly",
+                "Nly",
+                "Southerly"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "An A/C flying in Winters season from Chennai to Kolkata at 12 km a/c will experience",
+            "options": [
+                "Ely",
+                "Wly",
+                "Nly",
+                "Sly"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "An aircraft flying in Summer season from Delhi to Kolkata at 10 km will experience",
+            "options": [
+                "Easterly",
+                "Westerly",
+                "Northerly",
+                "Southerly"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "An A/C flying in Monsoon from Mumbai to Ahmadabad at 03 km will experience",
+            "options": [
+                "SEly",
+                "SWly",
+                "Nly",
+                "NWly"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "A/C flying in winter season from Delhi to Kolkata at 06 km will experience winds",
+            "options": [
+                "SEly",
+                "SWly",
+                "Nly",
+                "NW - Wly"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "An aircraft flying in winter season from Delhi to Kolkata at 06 km will experience",
+            "options": [
+                "Port drift",
+                "Starboard drift",
+                "Tail wind",
+                "Head wind"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Flying in winter season from Kolkata to Nagpur at 02 km will experience",
+            "options": [
+                "Port drift",
+                "Starboard drift",
+                "Tail wind",
+                "Head wind"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "During break monsoon the pressures all over the country",
+            "options": [
+                "Rise",
+                "Fall",
+                "Do not change"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "During break monsoon sometimes surface winds over East UP and Bihar are",
+            "options": [
+                "very strong",
+                "weak",
+                "normal"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Mid tropospheric cyclone occurs during",
+            "options": [
+                "Summer season",
+                "Winters",
+                "Post monsoon",
+                "Monsoon"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Mid tropospheric cyclone during monsoon form over",
+            "options": [
+                "Orissa",
+                "Punjab",
+                "Gujarat",
+                "Chennai"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "El Nino is",
+            "options": [
+                "Warm phase of ESNO",
+                "Cold Phase of ESNO",
+                "Good for Indian Monsoon causing more rains"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Maximum cyclones occur over India in",
+            "options": [
+                "Pre monsoon",
+                "Winters",
+                "Post monsoon",
+                "Monsoon"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Tropical Jet stream occurs in India during",
+            "options": [
+                "Pre monsoon",
+                "Winters",
+                "Post monsoon",
+                "Monsoon"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Pressure gradient over West Coast of India is steep during",
+            "options": [
+                "Pre monsoon",
+                "Winters",
+                "Post monsoon",
+                "Monsoon"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "During break monsoon more rain occurs",
+            "options": [
+                "along foot hills",
+                "NW India",
+                "S India"
+            ],
+            "correctAnswer": 0
+        }
+    ],
+    "General Circulation": [
+        {
+            "question": "The polewards moving air piles up in the subtropical regions and forms high pressure belt at the surface, called",
+            "options": [
+                "Subtropical high",
+                "Polar High",
+                "Equatorial high"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "______ occurs over subtropical high",
+            "options": [
+                "advection",
+                "convection",
+                "subsidence"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The occurrence of large deserts near 30N and 30S are due to large scale",
+            "options": [
+                "subsidence",
+                "convection",
+                "advection"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "A part of the sinking air over the subtropical high flows towards the equator, turning west (in the northern hemisphere) due to the Coriolis force. This surface air is called",
+            "options": [
+                "Trade winds",
+                "Roaring forties",
+                "Doldrums"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The huge vertical circulations, one between the equator and 30N and another between equator and 30S, are called",
+            "options": [
+                "Hadley Cells",
+                "Ferrel Cells",
+                "Polar cells"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The descending branch of the Hadley cell marked by calm winds and high pressure at the surface are called",
+            "options": [
+                "Tropical Latitudes",
+                "Middle latitudes",
+                "Horse Latitudes"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The winds in the upper troposphere are westerly. These are known as",
+            "options": [
+                "Natural Westerlies",
+                "Steady Westerlies",
+                "Zonal Westerlies"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In the equatorial regions the upper tropospheric winds are",
+            "options": [
+                "Westerlies",
+                "Easterlies",
+                "Zonal Westerlies"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "The disturbances of middle latitudes move from",
+            "options": [
+                "W to E",
+                "E to W",
+                "N to S",
+                "S to N"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The tropical disturbances which form in the equatorial low pressure belt move in",
+            "options": [
+                "Easterly direction",
+                "Westerly direction",
+                "Southerly direction"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Tropical disturbance which reach the zone of transition in the upper level flow change course and begin to move in a",
+            "options": [
+                "Perpendicular direction",
+                "Opposite direction",
+                "Southwards"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Latitudinally, on the average there is radiation ______ in the tropics than in the polar regions",
+            "options": [
+                "surplus",
+                "deficit",
+                "balance"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The systems like highs, lows, cyclonic circulation etc are associated with distinct types of weather. A study of the behaviour of these systems, known as",
+            "options": [
+                "Synoptic Meteorology",
+                "Climatology",
+                "Physical Meteorology"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Rising air creates calms or doldrums in the equatorial region.",
+            "options": [
+                "ITCZ",
+                "Horse Latitudes",
+                "Equatorial Doldrums"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Steady NE winds in the N hemisphere and SE winds in the S hemisphere are called.",
+            "options": [
+                "Easterly winds",
+                "Trade Winds",
+                "Tropical Winds"
+            ],
+            "correctAnswer": 1
+        }
+    ],
+    "Met Services": [
+        {
+            "question": "For non-scheduled National Flights an advance notice (before ETD) is required to be given to AMOs",
+            "options": [
+                "3 hr",
+                "18-24 hr",
+                "6 hr"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "For non-schedules National Flights an advance notice (before ETD) is required to be given to AMSs",
+            "options": [
+                "3 hr",
+                "18-24 hr",
+                "6 hr"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "WAFS provides high quality en-route forecasts of _____ to Met Offices.",
+            "options": [
+                "high quality en-route forecasts of winds and temperature",
+                "SIGMET",
+                "TREND"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "IMD has ______ Regional Met offices",
+            "options": [
+                "4",
+                "5",
+                "6"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "There are ______ Aerodrome Met Offices",
+            "options": [
+                "17",
+                "18",
+                "19"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "There are ______ Aeronautical Met Stations",
+            "options": [
+                "56",
+                "54",
+                "52"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In AIREP the Met Information is contained in Section",
+            "options": [
+                "1",
+                "2",
+                "3"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "TAF are generally valid for",
+            "options": [
+                "18 hr",
+                "12 hr",
+                "9 hr"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The validity of Landing Forecast (TREND) is",
+            "options": [
+                "1 hr",
+                "2 hr",
+                "3 hr"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Landing Forecast is append to",
+            "options": [
+                "METAR AND SPECI",
+                "TAF",
+                "AIREP"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Local/Area Forecast is issued three times a day valid for next",
+            "options": [
+                "18 hr",
+                "12 hr",
+                "9 hr"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Area Forecast covers an area",
+            "options": [
+                "100 NM",
+                "100 km",
+                "50 NM"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Global SIGWX Charts are issued by",
+            "options": [
+                "WMO",
+                "AMO",
+                "WAFC"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Global SIGWX Charts are valid for",
+            "options": [
+                "18 hr",
+                "24 hr",
+                "9 hr"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Global SIGWX Charts for high-level are issued for Flight Levels",
+            "options": [
+                "250 & 630",
+                "460 & 100",
+                "460 & 260"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "CODAR is",
+            "options": [
+                "Radar Report",
+                "Coded ARFOR",
+                "Upper report from an aircraft, other than weather reconnaissance aircraft"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "WINTEM is",
+            "options": [
+                "Actual upper winds",
+                "Forecast upper wind and temperature",
+                "Actual temperature and upper winds"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "SIGMET is notice of severe weather for",
+            "options": [
+                "actual",
+                "expected",
+                "both"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "SIGMET is issued for aircraft",
+            "options": [
+                "in flight",
+                "on ground",
+                "both"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "SIGMET is issued by",
+            "options": [
+                "WAFC",
+                "AMO",
+                "MWO"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "SIGMET is valid for",
+            "options": [
+                "4 hr",
+                "8 hr",
+                "9 hr"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "SIGMET is not issued for",
+            "options": [
+                "Rain",
+                "Volcanic Ash",
+                "SEV Icing"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "AIRMET is SIGMET issued by a MWO for the safety of",
+            "options": [
+                "low-level aircraft",
+                "high-level aircraft",
+                "both"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "GAMET is an area forecast in abbreviated plain language for",
+            "options": [
+                "low level flights",
+                "high level flights",
+                "all level flights"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "The validity of Airfield warnings is not exceeding",
+            "options": [
+                "3 hr",
+                "4 hr",
+                "6 hr"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Airfield warning is issued for expected wind speed",
+            "options": [
+                "30 kt",
+                "24 kt",
+                "15 kt"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Airfield warning is issued for wind direction of 20 kt changes by",
+            "options": [
+                "45°",
+                "30°",
+                "60°"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "Airfield Warning for gliders, light aircraft and helicopters is issued for expected wind speed",
+            "options": [
+                "15 kt",
+                "17 kt",
+                "30 kt"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Wind Shear Warning is issued for the observed or expected wind shear above runway",
+            "options": [
+                "up to 500 m",
+                "above 500 m",
+                "300 m"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "VOLMET is a MET information for aircraft",
+            "options": [
+                "on ground",
+                "in flight",
+                "both"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "VOLMET consists of",
+            "options": [
+                "SIGMET",
+                "TAF only",
+                "TAF AND METAR"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "In ROBEX the METAR/SPECI of international aerodromes and their alternates is exchanged",
+            "options": [
+                "within India",
+                "outside India"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Global SIGWX Charts are issued ______ times a day",
+            "options": [
+                "Two",
+                "Three",
+                "Four"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Global SIGWX Charts for Medium-level are issued for Flight Levels",
+            "options": [
+                "150 & 200",
+                "100 & 250",
+                "100 & 150"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "In India who compiles a single National SIGWX chart:",
+            "options": [
+                "New Delhi",
+                "Mumbai",
+                "Kolkata",
+                "Chennai"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "The Indian National SIGWX chart is made for Medium Levels between Flight Levels",
+            "options": [
+                "150 & 200",
+                "100 & 250",
+                "100 &150"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "VOLMET Radio Telephony Broadcast made on HF Channel from",
+            "options": [
+                "Mumbai only",
+                "Kolkata only",
+                "both Kolkata and Mumbai"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The Indian National SIGWX chart is valid for",
+            "options": [
+                "24 hr",
+                "18 hr",
+                "12 hr"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "In India the National SIGWX chart is issued",
+            "options": [
+                "2 times a day",
+                "4 times a day",
+                "6 times a day"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "Individual TS which cover less than 50% area, is termed as",
+            "options": [
+                "FRQ",
+                "ISOL",
+                "OCNL"
+            ],
+            "correctAnswer": 1
+        },
+        {
+            "question": "If TS cells have no separation between adjacent TS and cover an area more than 75%, it is termed as",
+            "options": [
+                "FRQ",
+                "ISOL",
+                "OCNL"
+            ],
+            "correctAnswer": 0
+        },
+        {
+            "question": "If TS cells are well separated and cover an area 50-75%, it is termed as",
+            "options": [
+                "FRQ",
+                "ISOL",
+                "OCNL"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "The Indian National SIGWX chart is made for High Levels between Flight Levels",
+            "options": [
+                "150&200",
+                "100&250",
+                "100&150",
+                "FL250 and FL630"
+            ],
+            "correctAnswer": 3
+        },
+        {
+            "question": "Local Forecast covers an area",
+            "options": [
+                "100 NM",
+                "100 km",
+                "50 NM"
+            ],
+            "correctAnswer": 2
+        },
+        {
+            "question": "Nowcasting forecast is valid for:",
+            "options": [
+                "30 hr",
+                "48 hr",
+                "less than 24 hr"
+            ],
+            "correctAnswer": 2
+        }
+    ]
+};
+        
+        const subjectIcons = {
+            'Navigation': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/><path d="M12 15l-3.76 1.68L12 6l3.76 10.68z"/></svg>',
+            'Meteorology': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>',
+            'Regulations': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff"><path d="M2 21h12v-2H2v2zM5.24 8.07l2.83-2.83 14.14 14.14-2.83 2.83L5.24 8.07zM12.32 1l5.66 5.66-2.83 2.83-5.66-5.66L12.32 1z"/></svg>',
+            'default': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 17l5-5h-3V8h-4v4H7l5 5z"/></svg>'
+        };
+
+        const chapterIcons = {
+            'Mass and Balance': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>',
+            'CP PNR': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff"><circle cx="12" cy="12" r="8"/><circle cx="8" cy="8" r="4" fill="white"/></svg>',
+            'Departure': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>',
+            'default': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 17l5-5h-3V8h-4v4H7l5 5z"/></svg>'
+        };
+        
+        function populateSubjects() {
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+            
+            for (const subject in materials) {
+                const materialNames = materials[subject].map(m => m.name).join(' | ');
+                const subjectCard = document.createElement('div');
+                subjectCard.className = 'list-card';
+                subjectCard.innerHTML = `
+                    <div class="card-icon">
+                        ${subjectIcons[subject] || subjectIcons['default']}
+                    </div>
+                    <div class="card-info">
+                        <h3>${subject}</h3>
+                        <p>${materialNames}</p>
+                    </div>
+                    <div class="arrow-icon">
+                        ↘
+                    </div>
+                `;
+                subjectCard.addEventListener('click', () => showMaterialsView(subject));
+                container.appendChild(subjectCard);
+            }
+        }
+        
+        function showSubjectsView() {
+            hideAllViews();
+            populateSubjects();
+            document.getElementById('subjects-view').classList.add('active');
+            document.getElementById('home-header').classList.add('active');
+            currentSubject = '';
+            currentMaterial = '';
+            currentChapter = '';
+            history.pushState({ view: 'subjects' }, '', '#subjects');
+        }
+        
+        function showMaterialsView(subject) {
+            currentSubject = subject;
+            currentMaterial = '';
+            currentChapter = '';
+            hideAllViews();
+            populateMaterials(subject);
+            document.getElementById('materials-view').classList.add('active');
+            history.pushState({ view: 'materials', subject: subject }, '', `#materials-${subject}`);
+        }
+        
+        function showChaptersView(material) {
+            currentMaterial = material;
+            currentChapter = '';
+            hideAllViews();
+            populateChapters(material);
+            document.getElementById('chapters-view').classList.add('active');
+            history.pushState({ view: 'chapters', subject: currentSubject, material: material }, '', `#chapters-${material}`);
+        }
+        
+        function showQuizView(chapter) {
+            currentChapter = chapter;
+            hideAllViews();
+            userAnswers = Array(quizzes[chapter].length).fill(null);
+            answeredQuestions = Array(quizzes[chapter].length).fill(false);
+            document.getElementById('quiz-title').textContent = chapter;
+            buildQuiz(chapter);
+            document.getElementById('quiz-view').classList.add('active');
+            document.getElementById('finish-button').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+            quizStartTime = new Date().getTime();
+            history.pushState({ view: 'quiz', subject: currentSubject, material: currentMaterial, chapter: chapter }, '', `#quiz-${chapter}`);
+        }
+        
+        function hideAllViews() {
+            document.querySelectorAll('.view-container').forEach(view => view.classList.remove('active'));
+            document.getElementById('home-header').classList.remove('active');
+        }
+        
+        function backToSubjects() {
+            showSubjectsView();
+        }
+        
+        function backToMaterials() {
+            showMaterialsView(currentSubject);
+        }
+        
+        function backToChapters() {
+            showChaptersView(currentMaterial);
+        }
+        
+        function populateMaterials(subject) {
+            const container = document.getElementById('materials-container');
+            container.innerHTML = '';
+            const subjectMaterials = materials[subject] || [];
+            
+            subjectMaterials.forEach(material => {
+                const materialCard = document.createElement('div');
+                materialCard.className = 'list-card';
+                materialCard.innerHTML = `
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1a3dff">
+                            <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16z"/>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h3>${material.name}</h3>
+                        <p>${material.chapters} Chapters</p>
+                    </div>
+                    <div class="arrow-icon">
+                        ↘
+                    </div>
+                `;
+                materialCard.addEventListener('click', () => showChaptersView(material.name));
+                container.appendChild(materialCard);
+            });
+        }
+
+        function populateChapters(material) {
+    const container = document.getElementById('chapters-container');
+    container.innerHTML = '';
+    const materialChapters = chapters[material] || [];
+    
+    materialChapters.forEach(chapter => {
+        const chapterCard = document.createElement('div');
+        chapterCard.className = 'list-card';
+        chapterCard.innerHTML = `
+            <div class="card-icon">
+                ${chapterIcons[chapter.name] || chapterIcons['default']}
+            </div>
+            <div class="card-info">
+                <h3>${chapter.name}</h3>
+                <p>${chapter.questions} Questions</p>
+            </div>
+            <div class="arrow-icon">
+                ↘
+            </div>
+        `;
+        chapterCard.addEventListener('click', () => showQuizView(chapter.name));
+        container.appendChild(chapterCard);
+    });
+
+    // Add extra <br> tags at the bottom of the chapters list
+    const extraBreaks = document.createElement('div');
+    extraBreaks.innerHTML = '<br><br><br><br><br><br>';
+    container.appendChild(extraBreaks);
+}
+
+        
+        function buildQuiz(chapter) {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+            const quizData = quizzes[chapter] || [];
+            
+            quizData.forEach((questionData, index) => {
+                const questionNumber = index + 1;
+                const questionElem = document.createElement('div');
+                questionElem.className = 'question-container';
+                questionElem.innerHTML = `
+                    <h3 class="question">${questionNumber}. ${questionData.question}</h3>
+                    <div class="options-container" id="options-${index}">
+                        ${questionData.options.map((option, optionIndex) => `
+                            <div class="option" onclick="selectOption(${index}, ${optionIndex})">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                quizContainer.appendChild(questionElem);
+            });
+        }
+        
+        function selectOption(questionIndex, optionIndex) {
+            if (answeredQuestions[questionIndex]) return;
+            const quizData = quizzes[currentChapter] || [];
+            const correctAnswerIndex = quizData[questionIndex].correctAnswer;
+            const options = document.querySelectorAll(`#options-${questionIndex} .option`);
+            answeredQuestions[questionIndex] = true;
+            userAnswers[questionIndex] = optionIndex;
+            options.forEach((option, index) => {
+                if (index === optionIndex) {
+                    if (index === correctAnswerIndex) {
+                        option.classList.add('correct');
+                    } else {
+                        option.classList.add('incorrect');
+                    }
+                } else if (index === correctAnswerIndex) {
+                    option.classList.add('correct');
+                }
+            });
+        }
+        
+        function finishQuiz() {
+            const quizData = quizzes[currentChapter] || [];
+            const endTime = new Date().getTime();
+            const timeSpentMs = endTime - quizStartTime;
+            const timeSpentMinutes = Math.floor(timeSpentMs / 60000);
+            const timeSpentSeconds = Math.floor((timeSpentMs % 60000) / 1000);
+            const correctAnswers = userAnswers.filter((answer, index) => answer === quizData[index].correctAnswer).length;
+            const scorePercentage = Math.round((correctAnswers / quizData.length) * 100);
+            const progressFill = document.getElementById('progress-fill');
+            progressFill.style.width = `${scorePercentage}%`;
+            if (scorePercentage >= 80) {
+                progressFill.classList.add('good-score');
+            } else {
+                progressFill.classList.remove('good-score');
+            }
+            document.getElementById('progress-text').textContent = `${scorePercentage}%`;
+            document.getElementById('correct-count').textContent = `${correctAnswers}/${quizData.length}`;
+            document.getElementById('time-spent').textContent = `${timeSpentMinutes}:${timeSpentSeconds < 10 ? '0' : ''}${timeSpentSeconds}`;
+            document.getElementById('finish-button').style.display = 'none';
+            document.getElementById('results-container').style.display = 'block';
+            document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function retakeQuiz() {
+            showQuizView(currentChapter);
+        }
+        
+        window.addEventListener('load', () => {
+            showSubjectsView();
+        });
+        
+        window.addEventListener('popstate', (event) => {
+            if (event.state) {
+                switch (event.state.view) {
+                    case 'subjects':
+                        showSubjectsView();
+                        break;
+                    case 'materials':
+                        showMaterialsView(event.state.subject);
+                        break;
+                    case 'chapters':
+                        showChaptersView(event.state.material);
+                        break;
+                    case 'quiz':
+                        showQuizView(event.state.chapter);
+                        break;
+                    default:
+                        showSubjectsView(); // Fallback to subjects view if state is invalid
+                }
+            } else {
+                showSubjectsView(); // If no state, go back to subjects
+            }
+        });
+    </script>
+</body>
+</html>
