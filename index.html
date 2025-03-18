@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SLKQ7G7YX9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SLKQ7G7YX9');
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -441,18 +450,18 @@
             }
             
             .bottom-action-buttons {
-                padding: 12px; /* Reduced from 18px */
-                gap: 12px; /* Reduced from 18px */
+                padding: 10px;
+                gap: 10px;
             }
 
             .bottom-action-button {
-                font-size: 14px; /* Reduced from 16.2px */
-                padding: 10px 15px; /* Reduced from 13.5px 18px */
+                font-size: 12.6px; /* Updated to match .header p size */
+                padding: 8px 12px;
             }
 
             .bottom-action-button svg {
-                width: 40px; /* Reduced from 60px */
-                height: 40px; /* Reduced from 60px */
+                width: 30px;
+                height: 30px;
             }
         }
     </style>
@@ -21143,7 +21152,7 @@
             if (answeredQuestions[questionIndex]) return;
             
             document.getElementById(`answer-reveal-${questionIndex}`).style.display = 'block';
-            document.getElementById(`self-assess-${questionIndex}`).style.display = 'block';
+            document.getElementById(`self-assess-${index}`).style.display = 'block';
             
             const checkAnswerBtn = document.getElementById(`check-btn-${questionIndex}`);
             checkAnswerBtn.style.backgroundColor = '#e0e0e0';
